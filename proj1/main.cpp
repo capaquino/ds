@@ -13,7 +13,7 @@
 // fn cmd f9 is build
 // shift ctrl R is run
 
-int main(int argc, char const *argv[])
+int main()
 {
     std::string input;
     std::getline(std::cin, input);
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
     {
         tokens.push_back(token);
     }
-    
+
     std::stack<std::string> stack;
     std::vector<std::string> postfix;
     for (const std::string symbol : tokens)
@@ -44,7 +44,6 @@ int main(int argc, char const *argv[])
         }
         else if (StringIsRightParentheses(symbol))
         {
-            //while(!CharIsLeftParentheses(stack.top()))
             while (!StringIsLeftParentheses(stack.top()))
             {
                 postfix.push_back(stack.top());
@@ -139,19 +138,17 @@ int main(int argc, char const *argv[])
     for (const std::string currentToken : postfix)
     {
         if (StringIsOperand(currentToken))
-        {
-            // fetch dictionary value and put on int stack
+        {   // fetch dictionary value and put on int stack
             intStack.push(tokenValueMap[currentToken]);
         }
         else if (StringIsOperator(currentToken))
-        {
+        {   // pop top 2 on stack and evaluate symbol
+            // pop evaluated value back on stack.
             int op1 = intStack.top();
             intStack.pop();
             int op2 = intStack.top();
             intStack.pop();
             intStack.push(Evaluate(currentToken, op2, op1)); // order matters.
-            // pop top 2 on stack and evaluate symbol
-            // pop evaluated value back on stack.
         }
         else
         {
