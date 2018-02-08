@@ -8,6 +8,7 @@
 
 #include <sstream>
 #include <vector>
+#include <map>
 // lambda expressions in c++ begin with [], so [](params) ... C++14
 // fn cmd f9 is build
 // shift ctrl R is run
@@ -95,6 +96,11 @@ int main(int argc, char const *argv[])
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 
+// symbol: variable
+// Numeric: 0-9
+// Alpha : A-Z or a-z
+// Token : Value after string split
+
     // actually need infix, convert to postfix, then evaluate.
     std::string postfixInput;
     std::getline(std::cin, postfixInput);
@@ -108,11 +114,11 @@ int main(int argc, char const *argv[])
     }
 
     // determine symbols
-    std::vector<int> tokensInt; // pay attention to the order.
+    std::map<std::string, int> tokenValueMap;
 
     for (const std::string currentToken : tokens)
     {
-        if (StringIsSymbol(currentToken)) // if variable we need user value
+        if (StringIsSymbol(currentToken)) // if its a symbol we need user value
         {
             std::cout << "What is the value of " << currentToken << "?" << std::endl;
             std::string integerTextInput;
@@ -120,22 +126,24 @@ int main(int argc, char const *argv[])
 
             if (StringIsNumeric(integerTextInput)) // validate user input is a number
             {
+                int tokenValue =  std::stoi(integerTextInput);
+                tokenValueMap[currentToken] = tokenValue;
                 std::cout << currentToken << "'s value was saved." << std::endl;
-                int intToken =  std::stoi(integerTextInput);
-                tokensInt.push_back(intToken);
             }
-            else
+            else // if user input was invalid, can try restarting: currentToken = prevToken.
             {
-                // to retry, try setting currentToken = prevToken; or just break;
                 std::cout << "Input must only contain numeric characters" << std::endl;
             }
-            // prompt for input, validate input, then put in int vector.
         }
-        else if (StringIsNumeric(currentToken)) // if already a number
+        else if (StringIsNumeric(currentToken)) // if already a number, don't ask.
         {
             // add to int vector
-            int intToken =  std::stoi(currentToken);
-            tokensInt.push_back(intToken);
+            int tokenValue =  std::stoi(currentToken);
+            tokenValueMap[currentToken] = tokenValue;
+        }
+        else if (StringIsOperator(currentToken)) // don't do anything
+        {
+            continue;
         }
         else // i dont think we need to evaluate the # sign... if so, add else if for it.
         {
@@ -144,29 +152,55 @@ int main(int argc, char const *argv[])
         }
     }
 
-    for (std::string token : tokens)
+    // Print out token : int value dictionary
+    std::cout << std::endl;
+    for (std::string t : tokens)
     {
-        std::cout << token << " ";
+        if (!StringIsOperator(t))
+        {
+            std::cout << t << " : " << tokenValueMap[t] << std::endl;
+        }
     }
     std::cout << std::endl;
 
-    for (int token : tokensInt)
+
+
+    // Evaluate string
+    std::stack<int> intStack;
+
+    for (const std::string currentToken : tokens)
     {
-        std::cout << token << " ";
+        if (StringIsOperand(currentToken))
+        {
+            // fetch dictionary value and put on int stack
+            intStack.push(tokenValueMap[currentToken]);
+        }
+        else if (StringIsOperator(currentToken))
+        {
+            int op1 = intStack.top();
+            intStack.pop();
+            int op2 = intStack.top();
+            intStack.pop();
+            intStack.push(Evaluate(currentToken, op2, op1)); // order matters.
+            // pop top 2 on stack and evaluate symbol
+            // pop evaluated value back on stack.
+        }
+        else
+        {
+            std::cout << "Unexpected behavior." << std::endl;
+        }
     }
-    std::cout << std::endl;
+
+    std::cout << "The expression evaluates to " << intStack.top() << "." << std::endl;
 
 
+#if 0
     std::stack<int> stack2; // should still be able to use functions.hpp on these
     std::string infix = "";
 
     for (const char symbol : postfixInput)
     {
-        if (CharIsDelimiter(symbol))
-        {
-            continue;
-        }
-        else if (CharIsOperator(symbol))
+        if (CharIsOperator(symbol))
         {
             // pop top 2 on stack and evaluate with symbol
             // pop evaluated value back on stack
@@ -176,7 +210,7 @@ int main(int argc, char const *argv[])
             // convert symbol to int and push to stack
         }
     }
-    
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 
     return 0;

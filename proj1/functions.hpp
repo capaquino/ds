@@ -153,21 +153,45 @@ bool StringIsNumeric(std::string s)
     return true;
 }
 
-int Evaluate(char c, int a, int b)
+bool StringIsOperator(std::string s)
 {
-    if (c == '+')
+    for (const char c : s)
+    {
+        if (!CharIsOperator(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool StringIsOperand(std::string s)
+{
+    for (const char c : s)
+    {
+        if (!CharIsOperand(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+int Evaluate(std::string s, int a, int b)
+{
+    if (s == "+")
     {
         return a + b;
     }
-    else if (c == '-')
+    else if (s == "-")
     {
         return a - b;
     }
-    else if (c == '*')
+    else if (s == "*")
     {
         return a * b;
     }
-    else if (c == '/')
+    else if (s == "/")
     {
         return a / b;
     }
