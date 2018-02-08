@@ -284,6 +284,8 @@ std::vector<std::string> InfixToPostfix()
 {
     /*** Get infix expression from user ***/
     std::string input;
+    std::cout << "Enter an infix expression. Valid operators are + - * / ( and )." << std::endl;
+    std::cout << "> ";
     std::getline(std::cin, input);
 
     // Parse, based on the ' ' and place separated string tokens into vector.
@@ -360,8 +362,9 @@ void EvaluatePostfix(std::vector<std::string> postfix)
     {
         if (StringIsSymbol(currentToken)) // if its a symbol we need user value
         {
-            std::cout << "What is the value of " << currentToken << "?" << std::endl;
             std::string integerTextInput;
+            std::cout << "What is the value of " << currentToken << "?" << std::endl;
+            std::cout << "> ";
             std::getline(std::cin, integerTextInput);
 
             if (StringIsNumeric(integerTextInput)) // validate user input is a number
@@ -397,7 +400,7 @@ void EvaluatePostfix(std::vector<std::string> postfix)
     std::cout << std::endl;
     for (std::string t : postfix)
     {
-        if (!StringIsOperator(t))
+        if (StringIsSymbol(t))
         {
             std::cout << t << " : " << tokenValueMap[t] << std::endl;
         }
