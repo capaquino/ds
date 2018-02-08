@@ -14,6 +14,7 @@
 
 int main(int argc, char const *argv[])
 {
+    #if 0
     std::string input;
     std::getline(std::cin, input);
 
@@ -91,20 +92,75 @@ int main(int argc, char const *argv[])
         std::cout << postfix << std::endl;
         stack.pop();
     }
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 
-#if 0
-    std::string input2;
-    std::getline(std::cin, input2);
+    // actually need infix, convert to postfix, then evaluate.
+    std::string postfixInput;
+    std::getline(std::cin, postfixInput);
 
-    // actual numbers need to be grouped and split into valid tokens
-    // symbols need to assigned integer values
+    std::istringstream tokenStream(postfixInput);
+    std::vector<std::string> tokens;
+    std::string token;
+    while (std::getline(tokenStream, token, ' '))
+    {
+        tokens.push_back(token);
+    }
+
+    // determine symbols
+    std::vector<int> tokensInt; // pay attention to the order.
+
+    for (const std::string currentToken : tokens)
+    {
+        if (StringIsSymbol(currentToken)) // if variable we need user value
+        {
+            std::cout << "What is the value of " << currentToken << "?" << std::endl;
+            std::string integerTextInput;
+            std::getline(std::cin, integerTextInput);
+
+            if (StringIsNumeric(integerTextInput)) // validate user input is a number
+            {
+                std::cout << currentToken << "'s value was saved." << std::endl;
+                int intToken =  std::stoi(integerTextInput);
+                tokensInt.push_back(intToken);
+            }
+            else
+            {
+                // to retry, try setting currentToken = prevToken; or just break;
+                std::cout << "Input must only contain numeric characters" << std::endl;
+            }
+            // prompt for input, validate input, then put in int vector.
+        }
+        else if (StringIsNumeric(currentToken)) // if already a number
+        {
+            // add to int vector
+            int intToken =  std::stoi(currentToken);
+            tokensInt.push_back(intToken);
+        }
+        else // i dont think we need to evaluate the # sign... if so, add else if for it.
+        {
+            std::cout << "Token was not valid. Exiting program..." << std::endl;
+            return 1;
+        }
+    }
+
+    for (std::string token : tokens)
+    {
+        std::cout << token << " ";
+    }
+    std::cout << std::endl;
+
+    for (int token : tokensInt)
+    {
+        std::cout << token << " ";
+    }
+    std::cout << std::endl;
+
 
     std::stack<int> stack2; // should still be able to use functions.hpp on these
     std::string infix = "";
 
-    for (const char symbol : input2)
+    for (const char symbol : postfixInput)
     {
         if (CharIsDelimiter(symbol))
         {
@@ -120,7 +176,9 @@ int main(int argc, char const *argv[])
             // convert symbol to int and push to stack
         }
     }
-    #endif
+    
+////////////////////////////////////////////////////////////////////////////////
+
     return 0;
 }
 
@@ -128,12 +186,12 @@ int main(int argc, char const *argv[])
 
 
 #if 0
-    std::vector<std::string> syms;
-    std::string sym;
+    std::vector<std::string> tokens;
+    std::string token;
     std::istringstream tokenStream(input);
-    while (std::getline(tokenStream, sym, ' '))
+    while (std::getline(tokenStream, token, ' '))
     {
-        syms.push_back(sym);
+        tokens.push_back(token);
     }
 
     // vector of string reps of our tokens is now available

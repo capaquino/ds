@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include <string>
+
 bool CharIsDelimiter(char c)
 {
     if (c == ' ')
@@ -112,6 +114,43 @@ bool CharIsNumeric(char c)
     {
         return false;
     }
+}
+
+bool CharIsAlpha(char c)
+{
+    if ((c >= 'A' && c <= 'Z') ||
+        (c >= 'a' && c <= 'z'))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsSymbol(std::string s)
+{
+    for (const char c : s)
+    {
+        if (!CharIsAlpha(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool StringIsNumeric(std::string s)
+{
+    for (const char c : s)
+    {
+        if (!CharIsNumeric(c))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 int Evaluate(char c, int a, int b)
