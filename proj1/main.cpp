@@ -15,108 +15,76 @@
 
 int main(int argc, char const *argv[])
 {
-    #if 0
     std::string input;
     std::getline(std::cin, input);
 
-// Status: Complete
-
-    char prevSymbol;
-    std::stack<char> stack;
-    std::string postfix = "";
-    for (const char symbol : input)
-    {
-        if (CharIsPoundSign(symbol))
-        {
-            break;
-        }
-        else if (CharIsDelimiter(symbol))
-        {
-            continue;
-        }
-        else if (CharIsOperand(symbol))
-        {
-            if (CharIsNumeric(symbol))
-            {
-                if (CharIsOperator(prevSymbol))
-                {
-                    postfix += ' ';
-                }
-                postfix += symbol;
-                std::cout << postfix << std::endl;
-            }
-            else // its an alphabetical character
-            {
-                postfix += ' ';
-                postfix += symbol;
-                std::cout << postfix << std::endl;
-            }
-        }
-        else if (CharIsLeftParentheses(symbol))
-        {
-            stack.push(symbol);
-        }
-        else if (CharIsRightParentheses(symbol))
-        {
-            while(!CharIsLeftParentheses(stack.top()))
-            {
-                postfix += ' ';
-                postfix += stack.top();
-                std::cout << postfix << std::endl;
-                stack.pop();
-            }
-            stack.pop();
-        }
-        else if (CharIsOperator(symbol))
-        {
-            while (!stack.empty() && HasEqualOrGreaterPrecedence(stack.top(), symbol))
-            {
-                postfix += ' ';
-                postfix += stack.top();
-                std::cout << postfix << std::endl;
-                stack.pop();
-            }
-            stack.push(symbol);
-        }
-        else
-        {
-            postfix += '!';
-            std::cout << '!' << std::endl;
-        }
-        prevSymbol = symbol; // for formatting whitespaces
-    }
-
-    while (!stack.empty())
-    {
-        postfix += ' ';
-        postfix += stack.top();
-        std::cout << postfix << std::endl;
-        stack.pop();
-    }
-#endif
-////////////////////////////////////////////////////////////////////////////////
-
-// symbol: variable
-// Numeric: 0-9
-// Alpha : A-Z or a-z
-// Token : Value after string split
-
-    // actually need infix, convert to postfix, then evaluate.
-    std::string postfixInput;
-    std::getline(std::cin, postfixInput);
-
-    std::istringstream tokenStream(postfixInput);
+    std::istringstream tokenStream(input);
     std::vector<std::string> tokens;
     std::string token;
     while (std::getline(tokenStream, token, ' '))
     {
         tokens.push_back(token);
     }
+    
+    std::stack<std::string> stack;
+    std::vector<std::string> postfix;
+    for (const std::string symbol : tokens)
+    {
+        if (StringIsPoundSign(symbol))
+        {
+            break;
+        }
+        else if (StringIsOperand(symbol))
+        {
+            postfix.push_back(symbol);
+        }
+        else if (StringIsLeftParentheses(symbol))
+        {
+            stack.push(symbol);
+        }
+        else if (StringIsRightParentheses(symbol))
+        {
+            //while(!CharIsLeftParentheses(stack.top()))
+            while (!StringIsLeftParentheses(stack.top()))
+            {
+                postfix.push_back(stack.top());
+                stack.pop();
+            }
+            stack.pop();
+        }
+        else if (StringIsOperator(symbol))
+        {
+            while (!stack.empty() && StringHasEqualOrGreaterPrecedence(stack.top(), symbol))
+            {
+                postfix.push_back(stack.top());
+                stack.pop();
+            }
+            stack.push(symbol);
+        }
+        else
+        {
+            postfix.push_back("ERROR");
+        }
+    }
+
+    while (!stack.empty())
+    {
+        postfix.push_back(stack.top());
+        stack.pop();
+    }
+
+    for (const std::string p : postfix)
+    {
+        std::cout << p << " ";
+    }
+    std::cout << std::endl;
+
+////////////////////////////////////////////////////////////////////////////////
 
     // determine symbols
     std::map<std::string, int> tokenValueMap;
 
-    for (const std::string currentToken : tokens)
+    for (const std::string currentToken : postfix)
     {
         if (StringIsSymbol(currentToken)) // if its a symbol we need user value
         {
@@ -154,7 +122,7 @@ int main(int argc, char const *argv[])
 
     // Print out token : int value dictionary
     std::cout << std::endl;
-    for (std::string t : tokens)
+    for (std::string t : postfix)
     {
         if (!StringIsOperator(t))
         {
@@ -168,7 +136,7 @@ int main(int argc, char const *argv[])
     // Evaluate string
     std::stack<int> intStack;
 
-    for (const std::string currentToken : tokens)
+    for (const std::string currentToken : postfix)
     {
         if (StringIsOperand(currentToken))
         {
@@ -193,44 +161,7 @@ int main(int argc, char const *argv[])
 
     std::cout << "The expression evaluates to " << intStack.top() << "." << std::endl;
 
-
-#if 0
-    std::stack<int> stack2; // should still be able to use functions.hpp on these
-    std::string infix = "";
-
-    for (const char symbol : postfixInput)
-    {
-        if (CharIsOperator(symbol))
-        {
-            // pop top 2 on stack and evaluate with symbol
-            // pop evaluated value back on stack
-        }
-        else if (CharIsOperand(symbol))
-        {
-            // convert symbol to int and push to stack
-        }
-    }
-#endif
 ////////////////////////////////////////////////////////////////////////////////
 
     return 0;
 }
-
-
-
-
-#if 0
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(input);
-    while (std::getline(tokenStream, token, ' '))
-    {
-        tokens.push_back(token);
-    }
-
-    // vector of string reps of our tokens is now available
-
-    // vector
-    // stoi
-    // std::foreach
-#endif

@@ -80,6 +80,67 @@ bool HasEqualOrGreaterPrecedence(char first, char second)
     }
 }
 
+int StringGetPriority(std::string s)
+{
+    if (s == "+" || s == "-")
+    {
+        return 1;
+    }
+    else if (s == "*" || s == "/")
+    {
+        return 2;
+    }
+    return -1;
+}
+
+bool StringHasEqualOrGreaterPrecedence(std::string first, std::string second)
+{
+    if (StringGetPriority(first) >= StringGetPriority(second))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsPoundSign(std::string s)
+{
+    if (s == "#")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsLeftParentheses(std::string s)
+{
+    if (s == "(" )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsRightParentheses(std::string s)
+{
+    if (s == ")" )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool CharIsLeftParentheses(char c)
 {
     if (c == '(' )
