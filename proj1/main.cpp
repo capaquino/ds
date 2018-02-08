@@ -1,164 +1,74 @@
-#include <iostream>
+#include <cstdio>
 #include <string>
-#include <sstream>
 #include <vector>
 #include <stack>
-#include <map>
 
 #include "functions.hpp"
 
+char getInput() // kinda garbage
+{
+	int value = 0;
+	std::cin >> value;
+
+	bool badValue = std::cin.fail() == 1;
+
+	while (badValue)
+	{
+		std::cin.clear();
+		std::cin.ignore(250, '\n');
+		std::cin >> value;
+		badValue = std::cin.fail() == 1;
+	}
+	std::cin.get();
+	return value;
+}
+
 int main()
 {
-
-    /*** Get infix expression from user ***/
-    std::string input;
-    std::getline(std::cin, input);
-
-    // Parse, based on the ' ' and place separated string tokens into vector.
-    std::istringstream tokenStream(input);
-    std::vector<std::string> tokens;
-    std::string token;
-    while (std::getline(tokenStream, token, ' '))
-    {
-        tokens.push_back(token);
-    }
-
-    /*** Convert to postfix ***/
-    std::stack<std::string> stack;
     std::vector<std::string> postfix;
-    for (const std::string symbol : tokens)
-    {
-        if (StringIsPoundSign(symbol))
+    bool PostfixAvailable = false;
+    char selection;
+
+    do {
+        std::cout << std::endl << "============ Menu ============";
+        std::cout << std::endl;
+        std::cout << std::endl << " (1) Convert Infix to Postfix ";
+        std::cout << std::endl << " (2) Evaluate Expression      ";
+        std::cout << std::endl << " (3) Exit                     " << std::endl;
+        std::cout << std::endl << "==============================" << std::endl;
+
+        selection = getInput();
+
+        if (selection == '1')
         {
-            break;
-        }
-        else if (StringIsOperand(symbol))
-        {
-            postfix.push_back(symbol);
-        }
-        else if (StringIsLeftParentheses(symbol))
-        {
-            stack.push(symbol);
-        }
-        else if (StringIsRightParentheses(symbol))
-        {
-            while (!StringIsLeftParentheses(stack.top()))
+            postfix = InfixToPostfix();
+            if (!PostfixAvailable)
             {
-                postfix.push_back(stack.top());
-                stack.pop();
+                PostfixAvailable = true;
             }
-            stack.pop();
         }
-        else if (StringIsOperator(symbol))
+
+        else if (selection == '2')
         {
-            while (!stack.empty() && StringHasEqualOrGreaterPrecedence(stack.top(), symbol))
+            if (PostfixAvailable)
             {
-                postfix.push_back(stack.top());
-                stack.pop();
+                EvaluatePostfix(postfix);
             }
-            stack.push(symbol);
+            else
+            {
+                std::cout << std::endl << "Postfix expression unavailable, press <1> to convert your infix expression to postfix." << std::endl;
+            }
+        }
+        else if (selection == '3')
+        {
+            std::cout << std::endl << "Bye!" << std::endl;
         }
         else
         {
-            postfix.push_back("ERROR");
+            std::cout << std::endl << "Your shit is getting skipped.!" << std::endl;
         }
-    }
 
-    // Empty what remains in the stack to complete the postfix expression
-    while (!stack.empty())
-    {
-        postfix.push_back(stack.top());
-        stack.pop();
-    }
-
-    /*** Print postfix to console ***/
-    for (const std::string p : postfix)
-    {
-        std::cout << p << " ";
-    }
-    std::cout << std::endl;
-
-////////////////////////////////////////////////////////////////////////////////
-
-    /*** Map string tokens to integer values ***/
-    std::map<std::string, int> tokenValueMap;
-    for (const std::string currentToken : postfix)
-    {
-        if (StringIsSymbol(currentToken)) // if its a symbol we need user value
-        {
-            std::cout << "What is the value of " << currentToken << "?" << std::endl;
-            std::string integerTextInput;
-            std::getline(std::cin, integerTextInput);
-
-            if (StringIsNumeric(integerTextInput)) // validate user input is a number
-            {
-                int tokenValue =  std::stoi(integerTextInput);
-                tokenValueMap[currentToken] = tokenValue;
-                std::cout << currentToken << "'s value was saved." << std::endl;
-            }
-            else // if user input was invalid, can try restarting: currentToken = prevToken.
-            {
-                std::cout << "Input must only contain numeric characters" << std::endl;
-            }
-        }
-        else if (StringIsNumeric(currentToken)) // if already a number, don't ask.
-        {
-            // add to int vector
-            int tokenValue =  std::stoi(currentToken);
-            tokenValueMap[currentToken] = tokenValue;
-        }
-        else if (StringIsOperator(currentToken)) // don't do anything
-        {
-            continue;
-        }
-        else // i dont think we need to evaluate the # sign... if so, add else if for it.
-        {
-            std::cout << "Token was not valid. Exiting program..." << std::endl;
-            return 1;
-        }
-    }
-
-    /*** Print out token : int value dictionary ***/
-    std::cout << std::endl;
-    for (std::string t : postfix)
-    {
-        if (!StringIsOperator(t))
-        {
-            std::cout << t << " : " << tokenValueMap[t] << std::endl;
-        }
-    }
-    std::cout << std::endl;
-
-
-
-    /*** Evaluate string ***/
-    std::stack<int> intStack;
-
-    for (const std::string currentToken : postfix)
-    {
-        if (StringIsOperand(currentToken))
-        {   // fetch dictionary value and put on int stack
-            intStack.push(tokenValueMap[currentToken]);
-        }
-        else if (StringIsOperator(currentToken))
-        {   // pop top 2 on stack and evaluate symbol
-            // pop evaluated value back on stack.
-            int op1 = intStack.top();
-            intStack.pop();
-            int op2 = intStack.top();
-            intStack.pop();
-            intStack.push(Evaluate(currentToken, op2, op1)); // order matters.
-        }
-        else
-        {
-            std::cout << "Unexpected behavior." << std::endl;
-        }
-    }
-
-    /*** Print out what the expression evaluates to ***/
-    std::cout << "The expression evaluates to " << intStack.top() << "." << std::endl;
-
-////////////////////////////////////////////////////////////////////////////////
+    } while(selection != '3');
 
     return 0;
 }
