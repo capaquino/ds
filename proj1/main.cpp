@@ -1,23 +1,20 @@
-#include <stack>
 #include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <exception>
 #include <string>
-#include "functions.hpp"
-
 #include <sstream>
 #include <vector>
+#include <stack>
 #include <map>
-// lambda expressions in c++ begin with [], so [](params) ... C++14
-// fn cmd f9 is build
-// shift ctrl R is run
+
+#include "functions.hpp"
 
 int main()
 {
+
+    /*** Get infix expression from user ***/
     std::string input;
     std::getline(std::cin, input);
 
+    // Parse, based on the ' ' and place separated string tokens into vector.
     std::istringstream tokenStream(input);
     std::vector<std::string> tokens;
     std::string token;
@@ -26,6 +23,7 @@ int main()
         tokens.push_back(token);
     }
 
+    /*** Convert to postfix ***/
     std::stack<std::string> stack;
     std::vector<std::string> postfix;
     for (const std::string symbol : tokens)
@@ -66,12 +64,14 @@ int main()
         }
     }
 
+    // Empty what remains in the stack to complete the postfix expression
     while (!stack.empty())
     {
         postfix.push_back(stack.top());
         stack.pop();
     }
 
+    /*** Print postfix to console ***/
     for (const std::string p : postfix)
     {
         std::cout << p << " ";
@@ -80,9 +80,8 @@ int main()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-    // determine symbols
+    /*** Map string tokens to integer values ***/
     std::map<std::string, int> tokenValueMap;
-
     for (const std::string currentToken : postfix)
     {
         if (StringIsSymbol(currentToken)) // if its a symbol we need user value
@@ -119,7 +118,7 @@ int main()
         }
     }
 
-    // Print out token : int value dictionary
+    /*** Print out token : int value dictionary ***/
     std::cout << std::endl;
     for (std::string t : postfix)
     {
@@ -132,7 +131,7 @@ int main()
 
 
 
-    // Evaluate string
+    /*** Evaluate string ***/
     std::stack<int> intStack;
 
     for (const std::string currentToken : postfix)
@@ -156,6 +155,7 @@ int main()
         }
     }
 
+    /*** Print out what the expression evaluates to ***/
     std::cout << "The expression evaluates to " << intStack.top() << "." << std::endl;
 
 ////////////////////////////////////////////////////////////////////////////////

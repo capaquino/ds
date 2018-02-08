@@ -5,6 +5,12 @@
 
 #include <string>
 
+// Note that some of these are not used because the scheme
+// changed to use strings for everything after the first algorithm was
+// implemented using characters.
+
+// Char Functions
+
 bool CharIsDelimiter(char c)
 {
     if (c == ' ')
@@ -56,91 +62,6 @@ bool CharIsOperator(char c)
 
 }
 
-int GetPriority(char c)
-{
-    switch (c)
-    {
-        case '+':
-        case '-': return 1;
-        case '*':
-        case '/': return 2;
-    }
-    return -1;
-}
-
-bool HasEqualOrGreaterPrecedence(char first, char second)
-{
-    if (GetPriority(first) >= GetPriority(second))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-int StringGetPriority(std::string s)
-{
-    if (s == "+" || s == "-")
-    {
-        return 1;
-    }
-    else if (s == "*" || s == "/")
-    {
-        return 2;
-    }
-    return -1;
-}
-
-bool StringHasEqualOrGreaterPrecedence(std::string first, std::string second)
-{
-    if (StringGetPriority(first) >= StringGetPriority(second))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool StringIsPoundSign(std::string s)
-{
-    if (s == "#")
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool StringIsLeftParentheses(std::string s)
-{
-    if (s == "(" )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool StringIsRightParentheses(std::string s)
-{
-    if (s == ")" )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 bool CharIsLeftParentheses(char c)
 {
     if (c == '(' )
@@ -181,6 +102,70 @@ bool CharIsAlpha(char c)
 {
     if ((c >= 'A' && c <= 'Z') ||
         (c >= 'a' && c <= 'z'))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int GetPriority(char c)
+{
+    switch (c)
+    {
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 2;
+    }
+    return -1;
+}
+
+bool HasEqualOrGreaterPrecedence(char first, char second)
+{
+    if (GetPriority(first) >= GetPriority(second))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+// String Functions
+
+
+bool StringIsPoundSign(std::string s)
+{
+    if (s == "#")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsLeftParentheses(std::string s)
+{
+    if (s == "(" )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool StringIsRightParentheses(std::string s)
+{
+    if (s == ")" )
     {
         return true;
     }
@@ -236,6 +221,31 @@ bool StringIsOperand(std::string s)
         }
     }
     return true;
+}
+
+int StringGetPriority(std::string s)
+{
+    if (s == "+" || s == "-")
+    {
+        return 1;
+    }
+    else if (s == "*" || s == "/")
+    {
+        return 2;
+    }
+    return -1;
+}
+
+bool StringHasEqualOrGreaterPrecedence(std::string first, std::string second)
+{
+    if (StringGetPriority(first) >= StringGetPriority(second))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 int Evaluate(std::string s, int a, int b)
