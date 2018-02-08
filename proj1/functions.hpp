@@ -284,7 +284,11 @@ std::vector<std::string> InfixToPostfix()
 {
     /*** Get infix expression from user ***/
     std::string input;
-    std::cout << "Enter an infix expression. Valid operators are + - * / ( and )." << std::endl;
+    std::cout << "Enter an infix expression using <space> as a delimiter." << std::endl;
+    std::cout << "Valid operators are + - * / ( and )." << std::endl;
+    std::cout << "<#> marks the end of the expression and is optional." << std::endl;
+    std::cout << "Symbols need to have values assigned to them when evaluated using menu option \"(2) Evaluate Expression\"." << std::endl;
+    std::cout << "Examples: \"10 + Foo - x\" and \"( ( A + 10 ) * bar ) / 9 #\" are valid inputs." << std::endl;
     std::cout << "> ";
     std::getline(std::cin, input);
 
@@ -317,7 +321,7 @@ std::vector<std::string> InfixToPostfix()
         else if (StringIsRightParentheses(symbol))
         {
             while (!StringIsLeftParentheses(stack.top()))
-            {
+            { // if you want to check that a left parenthese was added, do it here with stack.empty()
                 postfix.push_back(stack.top());
                 stack.pop();
             }
@@ -334,7 +338,8 @@ std::vector<std::string> InfixToPostfix()
         }
         else
         {
-            postfix.push_back("ERROR");
+            std::cout << "Non-operator non-alphanumeric symbol was detected. You cannot evaluate this expression." << std::endl;
+            postfix.push_back("<INVALID>");
         }
     }
 
@@ -375,8 +380,8 @@ void EvaluatePostfix(std::vector<std::string> postfix)
             }
             else // if user input was invalid, can try restarting: currentToken = prevToken.
             {
-                std::cout << "Input must only contain numeric characters" << std::endl;
-                exit(1);
+                std::cout << "Input must only contain numeric characters. Returning to menu..." << std::endl;
+                return;
             }
         }
         else if (StringIsNumeric(currentToken)) // if already a number, don't ask.
@@ -391,8 +396,8 @@ void EvaluatePostfix(std::vector<std::string> postfix)
         }
         else // i dont think we need to evaluate the # sign... if so, add else if for it.
         {
-            std::cout << "Token was not valid. Exiting program..." << std::endl;
-            exit(2);
+            std::cout << "Symbol in postfix expression was not valid. Returning to menu..." << std::endl;
+            return;
         }
     }
 
@@ -429,7 +434,8 @@ void EvaluatePostfix(std::vector<std::string> postfix)
         }
         else
         {
-            std::cout << "Unexpected behavior." << std::endl;
+            std::cout << "Symbol in postfix expression was not valid. Returning to menu..." << std::endl;
+            return;
         }
     }
 
