@@ -1,6 +1,10 @@
 //
 // Created by nad on 1/24/18.
 //
+
+// Lines 300-306 references
+// https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+
 #pragma once
 
 #include <iostream>
