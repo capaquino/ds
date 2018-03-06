@@ -2,9 +2,10 @@
 #include <fstream>
 #include <string>
 
+#include "directedgraph.hpp"
+
 int main()
 {
-    // bool f_some_flag = false;
     std::string input;
     char selection;
 
@@ -40,18 +41,17 @@ int main()
             std::cout << "V: " << V << std::endl;
             std::cout << "E: " << E << std::endl;
 
-            // DiGraph digraph = DiGraph();
+            DirectedGraph dg; //<<<<<<<
             for (int i = 0; i < V; i++)
             {
-                // digraph.AddVertex(i+1); // this function could be smart and
-                // add verteces starting at 1...
+                dg.AddVertex(i+1);
             }
 
             for (int i = 0; i < E; i++)
             {
                 int Vi, Vj, Wij; // First vertex, Second vertex, edge weight.
                 input >> Vi >> Vj >> Wij;
-                // digraph.AddEdge(Vi, Vj, Wij);
+                dg.AddEdge(Vi, Vj, Wij);
             }
 
             input.close();
