@@ -1,67 +1,90 @@
 #include "directedgraph.hpp"
 
 #include <queue>
+#include <climits> // INT_MAX
 
-void DirectedGraph::AddVertex(unsigned vid)
+void DirectedGraph::AddVertex()
 {
-    verteces.push_back(Vertex(vid));
+    _verteces.push_back(Vertex()); // vertex might need to be identifiable.
 }
 
-void DirectedGraph::AddEdge(unsigned vi, unsigned vj, unsigned wij)
+void DirectedGraph::AddEdge(int vi, int vj, int wij)
 {
-    edges.push_back(Edge(vi, vj, wij));
+    // vi-1 vj-1 wij because of indexing and project requirement.
+
+    // Update vi with vj
+    Vertex* p_vj = &(_verteces.at(vj-1)); // pointer to vertex
+    VertexCostPair to_vj {p_vj, wij}; // pointer to vertex cost pair
+    _verteces.at(vi-1).adjacentVerteces.push_back(to_vj);
+
+    // Update vj with vi
+    Vertex* p_vi = &(_verteces.at(vi-1)); // pointer to vertex
+    VertexCostPair to_vi {p_vi, wij}; // pointer to vertex cost pair
+    _verteces.at(vj-1).adjacentVerteces.push_back(to_vi);
 }
 
 int DirectedGraph::GetVerteces()
 {
-    return verteces.size();
+    return _verteces.size();
 }
 
 int DirectedGraph::GetEdges()
 {
-    return edges.size();
+    return _edges;
 }
-
-void DirectedGraph::ShortestPath(Vertex source)
+/*
+void Graph::printPath( Vertex v )
 {
-    
-
-
-    #if 0
-    std::vector<unsigned> dist {verteces.size()}; // watch out here
-
-    std::priority_queue<DistVertexPair, std::vector<DistVertexPair>,
-        std::greater<DistVertexPair>> priorityQueue;
-
-    dist[source] = 0;
-    priorityQueue.push(DistVertexPair {0, source});
-
-    while (!priorityQueue.empty())
+    if( v.path != NOT_A_VERTEX )
     {
-        unsigned u = priorityQueue.top().second;
-        priorityQueue.pop();
-
-
+        printPath( v.path );
+        cout << " to ";
     }
-    #endif
-
+cout << v; }
+*/
+void DirectedGraph::PrintPath(Vertex v)
+{
 }
-
 
 /*
-void Graph::unweighted( Vertex s )
+void Graph::dijkstra( Vertex s )
 {
-    Queue<Vertex> q;
     for each Vertex v
-        v.dist = INFINITY;
-    s.dist = 0;
-    q.enqueue( s );
-    while( !q.isEmpty( ) )
     {
-        Vertex v = q.dequeue( );
+        v.dist = INFINITY;
+        v.known = false;
+    }
+    s.dist = 0;
+
+    while( there is an unknown distance vertex )
+    {
+        Vertex v = smallest unknown distance vertex;
+        v.known = true;
         for each Vertex w adjacent to v
-            if( w.dist == INFINITY )
+            if( !w.known )
             {
-} }
-}
+                DistType cvw = cost of edge from v to w;
+                if( v.dist + cvw < w.dist )
+                {
+                    // Update w
+                    decrease( w.dist to v.dist + cvw );
+                    w.path = v;
+} } } }
 */
+
+void DirectedGraph::ShortestPath(Vertex s)
+{
+    for (Vertex v : _verteces)
+    {
+        v.dist = INT_MAX;
+        v.known = false;
+    }
+
+    s.dist = 0;
+
+    for (Vertex v : _verteces)
+    {
+
+    }
+
+}

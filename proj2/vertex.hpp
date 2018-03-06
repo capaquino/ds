@@ -1,13 +1,17 @@
 #pragma once
 
 #include <vector>
+#include <utility>
+
+class Vertex;
+
+typedef std::pair<Vertex*, int> VertexCostPair;
 
 class Vertex
 {
-private:
-    bool _visited;
 public:
-    const unsigned Id;
-    Vertex(unsigned identifier);
-    std::vector<unsigned> adjacent; // dunno about this
+    std::vector<VertexCostPair> adjacentVerteces;
+    bool known;
+    int dist;
+    Vertex* path;
 };

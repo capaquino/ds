@@ -41,10 +41,10 @@ int main()
             std::cout << "V: " << V << std::endl;
             std::cout << "E: " << E << std::endl;
 
-            DirectedGraph dg; //<<<<<<<
+            DirectedGraph dg;
             for (int i = 0; i < V; i++)
             {
-                dg.AddVertex(i+1);
+                dg.AddVertex();
             }
 
             for (int i = 0; i < E; i++)
@@ -62,6 +62,10 @@ int main()
             // Source for shortest paths
             // Prompt to enter a source vertex denoted by an integer in the
             // range of 1 to V (the vertex with the highest number)
+
+            // Print
+            
+
         }
         else if (selection == '3')
         {
