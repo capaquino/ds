@@ -2,6 +2,8 @@
 
 #include <queue>
 #include <climits> // INT_MAX
+#include <iostream>
+#include <algorithm>
 
 void DirectedGraph::AddVertex()
 {
@@ -14,13 +16,8 @@ void DirectedGraph::AddEdge(int vi, int vj, int wij)
 
     // Update vi with vj
     Vertex* p_vj = &(_verteces.at(vj-1)); // pointer to vertex
-    VertexCostPair to_vj {p_vj, wij}; // pointer to vertex cost pair
-    _verteces.at(vi-1).adjacentVerteces.push_back(to_vj);
-
-    // Update vj with vi
-    Vertex* p_vi = &(_verteces.at(vi-1)); // pointer to vertex
-    VertexCostPair to_vi {p_vi, wij}; // pointer to vertex cost pair
-    _verteces.at(vj-1).adjacentVerteces.push_back(to_vi);
+    VertexCostPair to_vj {p_vj, wij}; // p_vertex, cost pair
+    _verteces.at(vi-1).adjacentVerteces.push_back(to_vj); // update adjacency list
 }
 
 int DirectedGraph::GetVerteces()
@@ -32,21 +29,8 @@ int DirectedGraph::GetEdges()
 {
     return _edges;
 }
-/*
-void Graph::printPath( Vertex v )
-{
-    if( v.path != NOT_A_VERTEX )
-    {
-        printPath( v.path );
-        cout << " to ";
-    }
-cout << v; }
-*/
-void DirectedGraph::PrintPath(Vertex v)
-{
-}
 
-/*
+/* BOOK PSEUDOCODE
 void Graph::dijkstra( Vertex s )
 {
     for each Vertex v
@@ -72,19 +56,81 @@ void Graph::dijkstra( Vertex s )
 } } } }
 */
 
-void DirectedGraph::ShortestPath(Vertex s)
+void DirectedGraph::PrintVerteces()
 {
-    for (Vertex v : _verteces)
+    for ( Vertex v : _verteces)
     {
-        v.dist = INT_MAX;
-        v.known = false;
+        //for ( VertexCostPair vcp : v.adjacentVerteces)
+        //{
+        //
+        //}
+        std::cout << v.known << " " << v.dist << std::endl;
+    }
+}
+
+int DirectedGraph::GetVertexIndex(Vertex v)
+{
+    //return std::find(_verteces.begin(), _verteces.end(), v) - _verteces.begin();
+    //for (auto it = _verteces.begin(); *it != v;
+    for (int i = 0; i < _verteces.size(); i++)
+    {
+        if (_verteces.at(i) == v)
+            return i+1;
+    }
+    return -1;
+
+}
+
+/* BOOK PSEUDOCODE
+void Graph::printPath( Vertex v )
+{
+    if( v.path != NOT_A_VERTEX )
+    {
+        printPath( v.path );
+        cout << " to ";
+    }
+cout << v; }
+*/
+
+void DirectedGraph::PrintPath(int vertexIndex)
+{
+    Vertex v = _verteces.at(vertexIndex-1); //getting copied
+
+    if (v.path != NULL)
+    {
+        PrintPath(GetVertexIndex(*v.path));
+        std::cout << " to ";
+    }
+    std::cout << vertexIndex;
+}
+
+
+// w.first == *Vertex
+// w.second == cost to w.first
+void DirectedGraph::ShortestPath(int sourceIndex)
+{
+    for (Vertex &v : _verteces)
+    {
+        v.dist = INT_MAX; // could do this in initializer list
+        v.known = false; // default init'd to false anyway
     }
 
-    s.dist = 0;
+    _verteces.at(sourceIndex-1).dist = 0;
 
-    for (Vertex v : _verteces)
+    for (Vertex &v : _verteces) // this includes the source
     {
+        if (!v.known)
+        {
+            v.known = true;
 
+            for ( VertexCostPair w : v.adjacentVerteces) //getting copied, but okay since w has pointer
+            {
+                if (v.dist + w.second < w.first->dist)
+                {
+                    w.first->dist = v.dist + w.second;
+                    w.first->path = &v;
+                }
+            }
+        }
     }
-
 }

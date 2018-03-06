@@ -6,8 +6,11 @@
 
 int main()
 {
+    bool f_input_read = false;
     std::string input;
     char selection;
+    DirectedGraph dg;
+    int V, E;
 
     do {
         std::cout << std::endl << "============= Menu =============";
@@ -36,12 +39,10 @@ int main()
             }
 
             // Get verteces and edges, which are the first two values.
-            unsigned V, E;
             input >> V >> E;
             std::cout << "V: " << V << std::endl;
             std::cout << "E: " << E << std::endl;
 
-            DirectedGraph dg;
             for (int i = 0; i < V; i++)
             {
                 dg.AddVertex();
@@ -49,27 +50,44 @@ int main()
 
             for (int i = 0; i < E; i++)
             {
-                int Vi, Vj, Wij; // First vertex, Second vertex, edge weight.
+                int Vi, Vj, Wij;
                 input >> Vi >> Vj >> Wij;
                 dg.AddEdge(Vi, Vj, Wij);
             }
 
             input.close();
+            f_input_read = true;
         }
 
         else if (selection == '2')
         {
-            // Source for shortest paths
-            // Prompt to enter a source vertex denoted by an integer in the
-            // range of 1 to V (the vertex with the highest number)
+            if (f_input_read == true)
+            {
+                dg.ShortestPath(1); //TODO: Prompt instead of fixed
+                // Source for shortest paths
+                // Prompt to enter a source vertex denoted by an integer in the
+                // range of 1 to V (the vertex with the highest number)
 
-            // Print
-            
+                // Print
+                for (int i=1; i<=V; i++)
+                {
+                    std::cout << std::endl;
+                    dg.PrintPath(i);
+                }
+                std::cout << std::endl << std::endl;
+                dg.PrintVerteces();
+            }
+
+            else
+            {
+                std::cout << "Input file not read.";
+            }
+
 
         }
         else if (selection == '3')
         {
-
+            std::cout << std::endl << "Not implemented yet." << std::endl;
         }
         else if (selection == '4')
         {

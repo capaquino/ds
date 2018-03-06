@@ -14,4 +14,14 @@ public:
     bool known;
     int dist;
     Vertex* path;
+    bool operator==(Vertex v)
+    {
+        if (adjacentVerteces != v.adjacentVerteces ||
+            known != v.known ||
+            dist != v.dist ||
+            path != v.path)
+            return false;
+        else
+            return true;
+    }
 };
