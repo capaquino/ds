@@ -22,13 +22,9 @@ void DirectedGraph::AddEdge(int vi, int vj, int wij)
 
 void DirectedGraph::PrintVerteces()
 {
-    for ( Vertex v : _verteces)
+    for ( int i=0; i < _verteces.size(); i++)
     {
-        //for ( VertexCostPair vcp : v.adjacentVerteces)
-        //{
-        //
-        //}
-        std::cout << v.known << " " << v.dist << std::endl;
+        std::cout << "Node " << i+1 << " has distance to source: " << _verteces.at(i).dist << std::endl;
     }
 }
 
