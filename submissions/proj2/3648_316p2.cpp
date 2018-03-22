@@ -128,26 +128,47 @@ void DirectedGraph::ShortestPath(int sourceIndex)
 
     _verteces.at(sourceIndex-1).dist = 0;
 
-    // this for-loop is wrong if the source index is not 1.
-    for (Vertex &v : _verteces) // this includes the source
+    for (int j = sourceIndex-1; j < _verteces.size(); j++)
     {
-        if (!v.known)
+        if (!_verteces.at(j).known)
         {
-            v.known = true;
+            _verteces.at(j).known = true;
 
             // w.first == *Vertex
             // w.second == cost to w.first
-            for ( VertexCostPair w : v.adjacentVerteces) //getting copied, but okay since w has pointer
+            for ( VertexCostPair w : _verteces.at(j).adjacentVerteces) //getting copied, but okay since w has pointer
             {
                 // if (!w.first->known)
-                if (v.dist + w.second < w.first->dist)
+                if (_verteces.at(j).dist + w.second < w.first->dist)
                 {
-                    w.first->dist = v.dist + w.second;
-                    w.first->path = &v;
+                    w.first->dist = _verteces.at(j).dist + w.second;
+                    w.first->path = &_verteces.at(j);
                 }
             }
         }
     }
+/*
+    for (int k = 0; k < sourceIndex-1; k++)
+    {
+        if (!_verteces.at(k).known)
+        {
+            _verteces.at(k).known = true;
+
+            // w.first == *Vertex
+            // w.second == cost to w.first
+            for ( VertexCostPair w : _verteces.at(k).adjacentVerteces) //getting copied, but okay since w has pointer
+            {
+                // if (!w.first->known)
+                if (_verteces.at(k).dist + w.second < w.first->dist)
+                {
+                    w.first->dist = _verteces.at(k).dist + w.second;
+                    w.first->path = &_verteces.at(k);
+                }
+            }
+        }
+    }
+*/
+
 }
 
 
