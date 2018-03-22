@@ -248,7 +248,7 @@ int main()
                         for (int i=1; i<=V; i++)
                         {
                             std::cout << std::endl;
-                            dg.PrintPath(source);
+                            dg.PrintPath(i);
                         }
                         std::cout << std::endl << std::endl;
                         dg.PrintVerteces();
