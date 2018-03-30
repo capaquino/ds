@@ -1,5 +1,5 @@
 #include <iostream>
-//#include <fstream>
+#include <iomanip>
 #include <climits>
 
 #include "316p3.h"
@@ -15,10 +15,11 @@ bool LinearHashTable::hash(int key)
     }
     else
     {
+        collisions += 1; // collisions count for each linear probe too?
         int start = hash;
         while (willCollide(hash))
         {
-            collisions += 1; // collisions count for each linear probe too
+            // move collisions here... collisions += 1;
             hash += 1;
             if (hash > tableSize) // loop to beginning
             {
@@ -46,24 +47,52 @@ bool LinearHashTable::willCollide(int hash)
     return false;
 }
 
+
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
 
-    LinearHashTable table = LinearHashTable(10000);
-
-    for (int i = 0; i < 1000; i++)
+    /* Output table formatting */
+    const int firstColWidth = 14;
+    const int numColWidth = 8;
+    std::cout << std::left << std::setw(firstColWidth) << "Size: ";
+    for (int input_size = 1000; input_size <= 10000; input_size += 1000)
     {
-        if (!table.hash(rand() % INT_MAX))
+        std::cout << std::left << std::setw(numColWidth) << input_size;
+    }
+    std::cout << std::endl;
+    std::cout << std::left << std::setw(firstColWidth) << "Linear: ";
+
+    /* Linear Probing */
+    for (int input_size = 1000; input_size <= 9000; input_size += 1000)
+    {
+        LinearHashTable table = LinearHashTable(10000);
+
+        for (int i = 0; i < input_size; i++)
         {
-            std::cout << "Table full!" << std::endl;
-            break;
+            if (!table.hash(rand() % INT_MAX))
+            {
+                std::cout << "Table full!" << std::endl;
+                break;
+            }
         }
+
+/**/    std::cout << std::left << std::setw(numColWidth) << table.getCollisions();
     }
 
-    std::cout << "Collisions: " << table.getCollisions() << std::endl;
-    std::cout << "Hashes Used: " << table.getHashesUsed() << std::endl;
+    std::cout << std::endl;
 
+    /* Quadratic Hashing */
+    std::cout << std::left << std::setw(firstColWidth) << "Quadratic: ";
+
+    std::cout << std::endl;
+
+    /* Double Hashing */
+    std::cout << std::left << std::setw(firstColWidth) << "Double: ";
+
+    std::cout << std::endl;
+
+    //std::cout << "Hashes Used: " << table.getHashesUsed() << std::endl;
     //input.close();
     return 0;
 }
