@@ -1,45 +1,17 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 // ^ main() includes
-#include <vector>
-#include <queue>
-#include <list>
-// ^ WeightedGraph includes
 
-typedef std::pair<int,int> Edge;
-
-class WeightedGraph
-{
-private:
-    int numVerteces;
-    // why cant i use a vector instead of a list here?
-    std::list<Edge> *adjList;
-public:
-    WeightedGraph(int v) : numVerteces(v)
-    {
-        // allocates memory for adjaceny list
-    }
-
-    void AddEdge(int vi, int vj, int wij)
-    {
-
-    }
-
-    void Prims()
-    {
-
-    }
-};
-
-
+#include "3648_316p4.h"
 
 int main()
 {
     // Read input file
-    std::ifstream input;
-    input.open("cs316p4.txt");
-    if (!input)
+    std::ifstream fileInput;
+    fileInput.open("cs316p4.txt");
+    if (!fileInput)
     {
         std::cout << "Failed to open \"cs316pr4.txt\" file or not found."
         << std::endl;
@@ -48,18 +20,23 @@ int main()
 
     // Get verteces and edges, which are the first two values.
     int V, E;
-    input >> V >> E;
+    fileInput >> V >> E;
 
-    // auto wg = WeightedGraph(V);
+    //printf("V: %d\nE: %d\n\n", V, E);
+    std::cout << "V: " << V << std::endl << "E: " << E << std::endl;
+
+    auto wg = WeightedGraph(V);
 
     for (int i = 0; i < E; i++)
     {
         int Vi, Vj, Wij;
-        input >> Vi >> Vj >> Wij;
-        //wg.AddEdge(Vi, Vj, Wij);
+        fileInput >> Vi >> Vj >> Wij;
+        //printf("%d to %d costs %d\n", Vi, Vj, Wij);
+        std::cout << Vi << " to " << Vj << " costs " << Wij << std::endl;
+        wg.AddEdge(Vi, Vj, Wij);
     }
 
-    input.close();
+    fileInput.close();
 
     // Display menu
     std::string keyboardInput;
@@ -81,18 +58,25 @@ int main()
 
         if (selection == '1')
         {
-            // wg.Prims()
-            std::cout << std::endl << "Not implemented yet." << std::endl;
-        }
-
-        else if (selection == '1')
-        {
-            // DFT
-            std::cout << std::endl << "Not implemented yet." << std::endl;
+            std::cout << "Please enter a starting vertex\n> ";
+            std::string input;
+            getline(std::cin, input);
+            int startingVertex;
+            std::stringstream(input) >> startingVertex;
+            wg.Prims(startingVertex);
+            std::cout << "\nPress <enter> to display the menu again.\n";
+            getline(std::cin, input);
         }
         else if (selection == '2')
         {
-            std::cout << std::endl << "Not implemented yet." << std::endl;
+            std::cout << "Please enter a starting vertex\n> ";
+            std::string input;
+            getline(std::cin, input);
+            int startingVertex;
+            std::stringstream(input) >> startingVertex;
+            wg.DFT(startingVertex);
+            std::cout << "\nPress <enter> to display the menu again.\n";
+            getline(std::cin, input);
         }
         else if (selection == '3')
         {
